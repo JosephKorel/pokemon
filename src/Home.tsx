@@ -25,19 +25,24 @@ function Home() {
     "caterpie",
     "raticate",
   ];
-  const getPokemonList = async () => {
+  const getPokemonList = async (): Promise<void | null> => {
     let pokemonData: Pokemon[] = [];
     for (let pokemon of myPokemonList) {
       const getPokemon = await fetch(
         `https://pokeapi.co/api/v2/pokemon/${pokemon}`
       );
 
-      const result = await getPokemon.json();
-      pokemonData.push({
-        name: result.name,
-        avatar: result.sprites.other["official-artwork"].front_default,
-        abilities: result.abilities.slice(0, 2),
-      });
+      try {
+        const result = await getPokemon.json();
+        pokemonData.push({
+          name: result.name,
+          avatar: result.sprites.other["official-artwork"].front_default,
+          abilities: result.abilities.slice(0, 2),
+        });
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
     }
 
     setPokemonList(pokemonData);
